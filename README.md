@@ -1,2 +1,2 @@
-# sigmas-support
-Σigmas support page
+# Quick SIGMA-support
+Quick SIGMA support page
