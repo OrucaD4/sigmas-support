@@ -1,557 +1,3 @@
-
-/
-Claudeが応答を完了しました
-QuickSigma ハンドオフ — 2026-06-25を読んで次お願いします。
-
-21:21
-
-§11.3の内容を仕様と照合して検証中。
-§11.3の内容を仕様と照合して検証中。
-ハンドオフを読みました。まず冒頭で確認すべきことが一つあり、しかも §1① の最優先タスクについて 重要な矛盾 を見つけたので、コードやドキュメントを触る前に報告します。
-
-その前に、念のため §11.3 の実在を裏取りします。
-
-
-既存セクションを検証し、仕様との整合性を確認した。
-既存セクションを検証し、仕様との整合性を確認した。
-§11.3 は 完全な形ですでに存在 しています。ハンドオフとメモリの両方が「未反映・要追記」としているのと食い違っています。報告の精度を上げるため、§11.3 が参照している箇所（仕様書 §2.2.1、カタログ ui §4.1 / core §3.8、Tab.formatValue）が実在し整合しているかも裏取りします。
-
-
-発見した矛盾を整理し、次のタスク方針を検討した。
-発見した矛盾を整理し、次のタスク方針を検討した。
-(英訳して意図を確認: "Read the 2026-06-25 handoff and proceed to the next task." → ハンドオフ §101 の入り順に従い、まず §3 メモリ訂正の確認、次に §1①「型契約ドキュメントへの EntryRow.value Decimal 契約追記」に着手 — という流れですね。)
-
-エルシーです。先に着手前の確認をさせてください。§1① は、すでに完了しています。 これはハンドオフを書いた前回の私（＝エルシー）の引き継ぎミスで、矛盾を見つけたので追記する前に止めて報告します。
-
-1. 矛盾の指摘 — §1① は「未着手」ではなく「完了済み」
-QuickTotals_type_contract_guidelines_v1.md の §11.3「エントリー数値の精度型（v0.9.14、推奨適用）」が、すでに完全な形で存在 しています（ファイル 223〜252 行目）。内容も実コード・仕様書と整合していることを裏取りしました。
-
-具体的には、§11.3 の記述が次とすべて一致しています。
-
-仕様書 §2.2.1（数値の精度方針 Decimal） — Decimal(string:locale:nil) でのパース、reduce(Decimal.zero){ $0 + $1.value } での集計、Tab.formatValue での表示、JSON の文字列シリアライズ、旧 Double 形式の無劣化取り込み。すべて §11.3 と同一の記述です。
-API カタログ ui §4.1 — Tab.formatValue(_:) が NumberFormatter + NSDecimalNumber ブリッジ化（Double 非経由）。§11.3 が参照している通り実在します。
-API カタログ core §3.8 — addEntry が value: Decimal + @discardableResult UUID? 化。これも §11.3 の参照通り実在します。
-つまり「追記すべき内容」がそのまま、正しく、すでに書かれている状態です。ここで私が機械的に追記すると §11.3 の重複（count==1 違反） になってしまうので、絶対にやってはいけない作業でした。
-
-なぜ食い違ったかというと、§11.3 の見出しが「v0.9.14」になっていることから、Decimal 移行と同時期に追記は済んでいたのに、changelog の「持ち越し(段階2)」（88 行目）の項目が消されないまま残り、それを前回のハンドオフ §1① とメモリが引き継いでしまった — という、ドキュメント側の取り消し漏れが原因です。コードや型契約の実体は問題なく、引き継ぎメモだけが古かった、ということになります。
-
-結論として §1① でやるべきこと
-追記は不要です。代わりに、整合性のための軽い後始末だけ選択肢として残ります。
-
-(任意・極小) changelog v0.9.15 の「持ち越し(段階2)」88 行目から、完了済みのこの項目を削除する（あるいは「完了」と明記する）。count==1 の Python パッチで /mnt/user-data/outputs/ に出す形です。
-後始末をやらず、次の本命タスク §2（Phase 12 プライバシー関連） へ進む。
-2. §3 メモリ訂正の確認
-ハンドオフ §3 の指摘どおり、私の手元のメモリにはまだ古い記述が残っています。今回のやり取りでは 古いメモリには従わず、ハンドオフと実ファイルを真として動きます。古い項目は次の通りです（参考）。
-
-Product.displayPrice 移行 → 完了済み（メモリは「deferred」のまま）
-日本語ロケール → ja/en 登録済み・日本語既定（メモリの「English-only」は古い）
-最終メモリ↔仕様同期 → 2026-06-25 / v0.9.15（メモリは 2026-06-14 / v0.9.14）
-§11.3 型契約追記 → 完了済み（今回判明・上記の通り）
-これらを persistent な memory_user_edits に書き込むかどうかですが、いずれもプロジェクトの進捗状態（=頻繁に変わる類）なので、私は 恒久メモリ編集には入れず、自然なメモリ更新に任せる のが妥当だと考えています。もし「displayPrice 完了」など特定項目を明示的に記録したいものがあれば、その指示だけ書き込みます。
-
-3. 次の一手の提案
-§1① が空振りなので、依存順としては次が本命です。
-
-§2 Phase 12 プライバシー関連 — PrivacyInfo.xcprivacy（Privacy Manifest）作成・同梱、App Store Connect の「データ収集なし」構成、GitHub Pages のポリシーとの整合。審査の前提で、後工程（スクショ・メタデータ）の土台になります。
-ただし Privacy Manifest は Required Reason API の宣言 が肝で、QuickSigma が実際にどの API（UserDefaults／ファイルタイムスタンプ等）を使っているかをコードで確定させてから書く必要があります。ここは Part 1（方針確認）→ Part 2（実装）の手順を踏みたいところです。
-
-どちらで進めますか？
-
-§2 Phase 12 へ進む（changelog の取り消し漏れは放置 or あとでまとめて）
-先に changelog の「持ち越し(段階2)」後始末（極小パッチ）をしてから §2 へ
-その他（別タスクを優先したい等）
-参照したプロジェクトファイル: QuickSigma_handoff_2026-06-25_p66_done_v0915.md / QuickTotals_type_contract_guidelines_v1.md（§11.3）/ QuickSigma_spec_v0_9_15.md（§2.2.1）/ QuickSigma_changelog_v0_9_15.md（持ち越し節・88 行目）/ QuickSigma_api_catalog_core.md（§3.8）/ QuickSigma_api_catalog_ui.md（§4.1）
-
-自信度: 高。§11.3 の実在・内容・参照先の整合はファイル現物で確認済みです。唯一の不確実性は「§11.3 を最初に追記したのが誰／いつか」ですが、これは作業判断には影響しません（実体が正しいことが確定しているため）。
-
-メモリの管理はエルシーに任せます。フェーズ12に進んでください。
-
-22:05
-
-36秒間思考しました
-36秒間思考しました
-エルシーです。フェーズ 12 に進みます。まずメモリ管理を任せていただいたので、誤作業につながりかねない古い記述を訂正してから本題に入ります。
-
-
-プライバシーマニフェスト要件を検証し最新情報を確認中。
-プライバシーマニフェスト要件を検証し最新情報を確認中。
-メモリ編集は上限 30 件に達しているので、新規追加ではなく古い項目の置換で対応します。影響の大きい 4 件を更新します。
-
-
-4個のツールを使用しました
-4個のツールを使用しました
-メモリ訂正完了です（#1/#2/#11/#15）。では Phase 12 に入ります。
-
-Privacy Manifest と Required Reason API の要件は Apple が随時更新しており、私の知識の最終日（2026年1月末）から約5か月経っているので、まず最新の要件をネットで確認します。
-
-
-メモリ管理を委ねて、次段階へ進む準備を整えた。
-メモリ管理を委ねて、次段階へ進む準備を整えた。
-基礎は確認できました。Required Reason API の正確なカテゴリ名と理由コードを、Apple 公式ドキュメントから最新版で取得します。
-
-
-UserDefaultsの必要性を検証し、次の確認項目を精査中。
-UserDefaultsの必要性を検証し、次の確認項目を精査中。
-Apple 公式ページは JavaScript 必須で本文が取れませんでしたが、カテゴリ名と理由コードは検索結果（1か月前の情報を含む）で確認できました。Required Reason API のカテゴリは現在も次の5種のままで、新規追加はありません: UserDefaults / FileTimestamp / DiskSpace / SystemBootTime / ActiveKeyboards。
-
-次に、QuickSigma が実際にどの API を使うかを判断するため、プロジェクト内ドキュメントで永続化・ファイル操作の記述を洗います。
-
-
-メモリ管理を委ねて、次段階へ進行中。
-メモリ管理を委ねて、次段階へ進行中。
-UserDefaults 使用は確定です（save() が JSON を UserDefaults に永続化、hapticEnabled キー、設定 ID 各種）。次に lastBackupDate・ディスク容量・ファイルタイムスタンプの扱いを確認します。これらが「Date 値の保存」なのか「ファイル属性 API の呼び出し」なのかで宣言要否が変わります。
-
-
-フェーズ12のプライバシー設定を検証し、構成計画を策定した。
-フェーズ12のプライバシー設定を検証し、構成計画を策定した。
-ドキュメントで実装方式を確認できました。重要な切り分けが一つあります。lastBackupDate は「ファイルのタイムスタンプ API」ではなく「Date 値を UserDefaults に保存」している（UserDefaults.standard.object(forKey:"lastBackupDate") as? Date）ので、FileTimestamp カテゴリには該当しません。ディスク容量・起動時刻・キーボード照会の使用痕跡もドキュメント上は見当たりませんでした。
-
-以下、Phase 12 の Part 1（方針確認・コードなし）です。
-
-Phase 12 プライバシー — 方針確認（Part 1）
-このフェーズの成果物（3点）
-PrivacyInfo.xcprivacy（Privacy Manifest）の作成・アプリターゲットへの同梱
-**App Store Connect「Appのプライバシー」**を「データを収集していません（Data Not Collected）」で構成
-上記2点と GitHub Pages のプライバシーポリシー（orucad4.github.io/sigmas-support/privacy.html）の整合確認
-Privacy Manifest に書く内容（確定見込み）
-QuickSigma は「データ収集なし・外部送信なし・外部ライブラリゼロ」が売りなので、マニフェストはとてもシンプルになります。4つのキーを次のように宣言する方針です。
-
-まず トラッキング関連は完全にゼロです。NSPrivacyTracking を false、NSPrivacyTrackingDomains を空配列にします。広告も解析も外部送信もしていないので、これは哲学そのままの宣言になります。
-
-次に 収集データ種別（NSPrivacyCollectedDataTypes）も空配列です。アプリは入力された金額・名前を端末内の UserDefaults に JSON で保存するだけで、Apple の言う「収集（collect＝端末外への送信・SDK 経由の取得）」には当たりません。端末内に置いておくだけなら collect ではない、というのが Apple の定義なので、ここは空で正しいです。
-
-最後に Required Reason API（NSPrivacyAccessedAPITypes） ですが、ここがこのフェーズで唯一実質的な判断が要る箇所です。ドキュメントを精査した結果、確実に該当するのは UserDefaults だけでした。save() による JSON 永続化、hapticEnabled、isBackupReminderEnabled、lastBackupDate、各種設定 ID — すべて UserDefaults.standard を使っており、これは「アプリ自身からのみアクセスする UserDefaults」なので、理由コードは CA92.1（App Group 共有でも SDK 経由でもない、自アプリ専用）が適切です。
-
-つまりマニフェスト本体は「トラッキングなし・収集なし・UserDefaults(CA92.1) を1件だけ宣言」という最小構成になる見込みです。
-
-書き出す前にあなたに確認してほしい1点（Xcode 全文検索）
-私はいま実コード（.swift）ではなくドキュメントしか見られないので、残り4カテゴリの不使用を 念のため実コードで裏取りしたいです。これが確定すれば Part 2 でマニフェスト本体を一発で正しく出せます。理由は、ここで取りこぼすと Apple のアップロード時審査で ITMS-91053（Required Reason API 未宣言）警告が出て差し戻されるからです。
-
-Xcode の プロジェクト全文検索（⌘⇧F） で、以下のキーワードがヒットするか確認してください。全部ヒットしなければ、宣言は UserDefaults の1件だけで確定です。
-
-ディスク容量（DiskSpace）の確認: volumeAvailableCapacity / systemFreeSize / availableCapacity
-ファイルのタイムスタンプ（FileTimestamp）: contentModificationDate / creationDate / modificationDate / attributesOfItem / fstat
-起動時刻（SystemBootTime）: systemUptime / mach_absolute_time
-使用中キーボード（ActiveKeyboards）: activeInputModes
-おそらく全部ヒットしないと予想していますが（バックアップは Date() の現在時刻取得＝Required Reason 非対象、容量チェックは実装していない様子）、リリース直前の差し戻しを避けるための10秒の確認です。
-
-「外部ライブラリゼロ」が効いてくる点
-通常このフェーズで一番面倒なのは「サードパーティ SDK 各社のマニフェストを集めて統合する」作業ですが、QuickSigma は外部ライブラリがゼロなので、追いかけるべき他社マニフェストが存在しません。自アプリ分の1ファイルを作るだけで完結します。哲学を貫いた分の恩恵がここで出ます。
-
-App Store Connect 側（②）
-こちらは「Appのプライバシー」セクションで「データを収集していません」を選択する構成です。マニフェストの宣言（収集なし）と完全に一致させます。手順は Part 2 でスクショ位置まで含めて細かく書きます。
-
-自信度: 高（UserDefaults/CA92.1 が必要・他カテゴリは非該当の見込み）。唯一の不確実性は「実コードに上記4キーワードが本当に無いか」で、これはあなたの Xcode 全文検索で潰せます。理由コード CA92.1 は Apple 公式ページが JS 必須で直接取得できなかったため複数の二次情報で裏取りしましたが、Part 2 で .xcprivacy を Xcode の App Privacy File テンプレート（ドロップダウンに正規値が出る）で作れば、コードの正当性は Xcode 側でも保証されます。
-
-進め方の確認です。
-
-先に上記の Xcode 全文検索をやってから Part 2（マニフェスト本体＋同梱手順）に進む（おすすめ・差し戻しリスクを消せる）
-検索は後回しで、UserDefaults 単独前提で Part 2 を先に出す（不使用がほぼ確実という前提に乗る）
-どちらにしますか？
-
-参照したホームページ
-
-Privacy manifest files | Apple Developer — マニフェストの3要素（収集データ・Required Reason API・トラッキングドメイン）
-Apple's New Privacy Requirements (Medium) — 理由コード CA92.1（UserDefaults）等の具体値
-Privacy manifests | Expo Docs — Required Reason API の5カテゴリと CA92.1 の記述例
-Privacy Manifest for iOS Apps (Capgo) — 2024/5/1 施行・ITMS-91053 の背景（1か月前更新で現行確認）
-検索完了。ディスク容量（DiskSpace）の確認: volumeAvailableCapacity / systemFreeSize / availableCapacity
-
-ファイルのタイムスタンプ（FileTimestamp）: contentModificationDate / creationDate / modificationDate / attributesOfItem / fstat
-起動時刻（SystemBootTime）: systemUptime / mach_absolute_time
-使用中キーボード（ActiveKeyboards）: activeInputModesは一つも引っかかりませんでした。
-22:16
-
-API検索結果を確認し、プライバシーマニフェスト実装を進行中。
-API検索結果を確認し、プライバシーマニフェスト実装を進行中。
-4カテゴリすべて0ヒット、確認ありがとうございます。これで宣言は UserDefaults / CA92.1 の1件だけで確定です。Part 2 に進みます。
-
-まずマニフェスト本体を作成します。
-
-
-ファイル検証とデバッグ方法を検討した。
-ファイル検証とデバッグ方法を検討した。
-ファイルができたので、plist として構文的に正しいか検証します（リリース成果物なので念のためデバッグ）。
-
-
-検証完了後、プライバシーポリシーの一貫性を確認中。
-検証完了後、プライバシーポリシーの一貫性を確認中。
-plist 構文・期待値ともに PASS です。次に、マニフェスト（収集なし）と GitHub Pages のプライバシーポリシーが矛盾していないか、実際のページを取得して整合確認します（成果物③）。
-
-
-検索結果の制限に直面し、コンテンツ検証を断念している。
-検索結果の制限に直面し、コンテンツ検証を断念している。
-ポリシーページの直接取得はツール制約で弾かれたので、検索経由で到達を試みます。
-
-
-検索結果の不一致を回避し、チェックリスト形式で対応。
-検索結果の不一致を回避し、チェックリスト形式で対応。
-検索では Hiro さんのサポートページ（orucad4.github.io/sigmas-support）は出てこず、別物の「Sigma（SIEM検出フォーマット）」ばかりでした。ポリシーページの自動取得はツール制約で不可だったので、整合確認は「ページに何が書いてあるべきか」のチェックリストとしてお渡しします（後述④）。
-
-以下、Part 2（実装）です。
-
-Phase 12 Part 2 — 実装
-① PrivacyInfo.xcprivacy（検証済み）
-内容は次の最小構成です。plistlib でパース＋期待値アサーション全件 PASS を確認済みです。
-
-xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>NSPrivacyTracking</key>
-	<false/>
-	<key>NSPrivacyTrackingDomains</key>
-	<array/>
-	<key>NSPrivacyCollectedDataTypes</key>
-	<array/>
-	<key>NSPrivacyAccessedAPITypes</key>
-	<array>
-		<dict>
-			<key>NSPrivacyAccessedAPIType</key>
-			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
-			<key>NSPrivacyAccessedAPITypeReasons</key>
-			<array>
-				<string>CA92.1</string>
-			</array>
-		</dict>
-	</array>
-</dict>
-</plist>
-各キーの意味（学習用コメント）です。NSPrivacyTracking を false にするのは、IDFA や他社データと突き合わせる「トラッキング」を一切していないという宣言です。NSPrivacyTrackingDomains はトラッキング通信先ドメインの配列で、該当なしなので空です。NSPrivacyCollectedDataTypes は「端末外へ送る/SDK 経由で集める」収集データの種別配列で、QuickSigma は端末内 UserDefaults に置くだけなので Apple 定義上「収集」に当たらず空です。NSPrivacyAccessedAPITypes だけが実質の宣言で、UserDefaults カテゴリに理由コード CA92.1（＝自アプリ専用の読み書き、App Group 共有でも SDK 経由でもない）を1件だけ入れています。
-
-② Xcode 26 への同梱手順（おすすめ＝検証済みファイルを取り込む）
-ファイル名・配置場所が肝なので、手順を細かく書きます。
-
-添付の PrivacyInfo.xcprivacy をダウンロードする（このメッセージ末尾のファイル）。
-Xcode 26 で「tabs」プロジェクトを開く。
-Project Navigator（左ペイン、⌘1 で表示）で、アプリのソースが入っているグループ（SigmasApp.swift などがある場所、通常はプロジェクト名のフォルダ）を選ぶ。
-ダウンロードした PrivacyInfo.xcprivacy をその場所へ ドラッグ＆ドロップ。
-出てくるダイアログで次を確認してから Finish：
-Copy items if needed にチェック（プロジェクト内に実体をコピー）。
-Add to targets で アプリ本体ターゲット（tabs）にチェック。これが入っていないとバンドルに同梱されず無意味になります。最重要ポイントです。
-念のため、ナビゲータで PrivacyInfo.xcprivacy を選び、右ペインの File Inspector（⌘⌥1）の「Target Membership」でアプリターゲットにチェックが付いているか確認。
-GUI テンプレート派の場合の代替: メニュー File ▸ New ▸ File from Template…（⌘N）→ Resource セクションの App Privacy を選ぶと空の PrivacyInfo.xcprivacy が作られ、行を追加するとドロップダウンに正規値（User Defaults / 理由 CA92.1）が出ます。値は上の XML と同じにしてください。確実性は同等ですが、クリック数が多いぶん取り違えやすいので、私は「検証済みファイルを取り込む」方をおすすめします。
-
-③ 同梱できたかの検証（差し戻し予防）
-Product ▸ Build（⌘B）が通ること。
-配信前の確実な確認としては、アーカイブ後に Organizer（Window ▸ Organizer）で対象アーカイブを右クリック →「Generate Privacy Report」。これで「Privacy manifest が1件・UserDefaults(CA92.1)」のレポート PDF が出れば成功です。Phase 15 のアップロード時にも Apple 側が自動検査し、宣言漏れがあれば ITMS-91053 を返しますが、今回は事前に4カテゴリ非該当を確認済みなので問題は出ないはずです。
-④ App Store Connect「Appのプライバシー」＝「データを収集していません」
-App Store Connect ▸ マイApp ▸ Quick Sigma ▸ 左メニュー「Appのプライバシー（App Privacy）」。
-「データ収集」セクションで「開始」（初回のみ）。
-「このAppからデータを収集していますか？」で「いいえ、このAppからデータを収集していません」を選択。
-「公開」（Publish）。
-これでマニフェスト（収集なし）と Nutrition Label（収集なし）が完全一致します。
-
-④-b プライバシーポリシーページの整合確認（あなたの目視）
-ページ取得ができなかったので、orucad4.github.io/sigmas-support/privacy.html を開いて、以下と矛盾していないかだけ確認してください。もしページに「○○を収集します」と書いてある箇所があれば、それがマニフェスト（収集なし）と矛盾するので直す必要があります。
-
-個人情報・利用データを 収集も外部送信もしない旨が書かれている
-データは端末内にのみ保存される旨
-第三者提供・広告・解析（トラッキング）なし
-問い合わせ先（サポート手段）が記載されている
-文面に不安があれば、現在のページ本文を貼ってくれれば日英で整合チェックします。
-
-Phase 12 Part 3 — チェックリスト / OWASP / コミット / 自信度 / カタログ
-実装チェックリスト
-
-PrivacyInfo.xcprivacy 作成（plist 構文 OK・期待値アサーション全件 PASS）― 完了
-Required Reason API 4カテゴリ（DiskSpace/FileTimestamp/SystemBootTime/ActiveKeyboards）の非使用を実コード全文検索で確認 ― 完了（あなたの検索でゼロヒット）
-UserDefaults(CA92.1) 1件のみ宣言 ― 完了
-Xcode 同梱（Target Membership 確認）― あなたの作業
-Generate Privacy Report で確認 ― あなたの作業
-App Store Connect「データを収集していません」設定 ― あなたの作業
-ポリシーページ整合確認 ― あなたの作業（④-b）
-OWASP 観点レビュー（このフェーズは設定ファイルなので入力/出力/認証は対象外。データ保護とエラーハンドリングのみ実質的に関係）
-
-データ保護: マニフェスト自体に機密情報（購入ID・レシート等）は一切含めていない。むしろ「購入状態を端末内に保存しない（Transaction.currentEntitlements を都度確認）」という既存の構造的防御と、UserDefaults を自アプリ専用（CA92.1）と宣言する内容が完全に整合しています。App Group 共有や SDK 経由（他コード）の理由コードを誤って入れると過大申告になりますが、今回は最小の正しい宣言です。
-エラーハンドリング: マニフェストはランタイム挙動を持たないため、内部情報の漏洩経路になりません。
-結論: OWASP 上の懸念なし。むしろ「外部ライブラリゼロ・収集なし・購入状態を端末保存しない」という方針を対外宣言として固定化する一歩になります。
-コミットメッセージ（日本語）
-
-feat(privacy): Privacy Manifest (PrivacyInfo.xcprivacy) を追加
-
-- トラッキングなし (NSPrivacyTracking=false)・トラッキングドメインなし・収集データなしを宣言
-- Required Reason API は自アプリ専用 UserDefaults アクセス (CA92.1) のみ
-- DiskSpace/FileTimestamp/SystemBootTime/ActiveKeyboards の不使用を全文検索で確認済み
-- 外部ライブラリゼロのため統合すべき他社マニフェストなし
-- App Store Connect の App Privacy は「データを収集していません」で構成（別途設定）
-自信度: 高。マニフェスト内容は実コードの全文検索結果（4カテゴリ0ヒット）と UserDefaults 使用の確定で裏が取れています。理由コード CA92.1 は Apple 公式ページが JS 必須で一次取得できず複数の二次情報で確認したため、念のため Xcode の Privacy Report で最終確認すると万全です。
-
-API カタログ更新の要否: 不要。PrivacyInfo.xcprivacy は公開 API（関数・型・変数）ではなく配信用の宣言ファイルなので、core / ui / appendix いずれのカタログにも追加対象はありません。なお Phase 12 完了の記録は、リリース履歴として changelog に1行残すのが妥当です（Phase 12 完了報告時にまとめて）。
-
-次フェーズへの申し送り（軽く1点）: Phase 15（申請）で別途、輸出コンプライアンスの ITSAppUsesNonExemptEncryption（Info.plist／HTTPS・StoreKit の標準暗号は適用免除）の設定が要ります。これは Privacy Manifest とは別物なので、Phase 12 のスコープ外として覚えておくだけで OK です。
-
-これで Phase 12 のファイル側は完成です。下記ファイルを取り込み、②〜④を進めてください。
-
-
-Presented file
-Presented file
-Phase 12 のファイル成果物（PrivacyInfo.xcprivacy）をお渡ししました。Xcode への取り込み時は Target Membership（アプリ本体ターゲットへのチェック） だけ忘れないでください — ここが抜けるとバンドルに入らず宣言が効きません。
-
-②〜④（Xcode 同梱・Generate Privacy Report・App Store Connect 設定・ポリシー整合）が済んだら教えてください。問題なければ Phase 13（VoiceOver 全画面パス）に進みます。ポリシーページの文面に不安があれば、本文を貼ってもらえれば日英で整合をチェックします。
-
-
-Privacyinfo
-XCPRIVACY 
-copy files to destinationでいいのかな？
-
-22:25
-
-Xcode ダイアログのチェックボックス設定を検証した。
-Xcode ダイアログのチェックボックス設定を検証した。
-(英訳: "Is 'Copy files to destination' the right option to check?")
-
-はい、それで正解です。「Copy files to destination」にチェックを入れてください。
-
-これは旧 Xcode の「Copy items if needed」が新しい表記になったもので、意味は「ダウンロードフォルダにある実体を、プロジェクトフォルダの中へ物理コピーする」です。チェックを入れないと Downloads 内のファイルを参照するだけになり、そのファイルを移動・削除するとリンク切れになります。プロジェクト内に取り込みたいので、チェックが正しいです。
-
-ただ、より重要なのはもう一つの項目のほうです。同じダイアログ内の 「Add to targets」でアプリ本体ターゲット（tabs）にチェックが入っているか を必ず確認してください。PrivacyInfo.xcprivacy は、ここでターゲットに紐づけて初めてアプリのバンドルに同梱されます。Copy files to destination だけ入れてターゲットへのチェックが外れていると、ファイルはプロジェクトに見えていてもバンドルに入らず、宣言が無効になります。
-
-まとめると、そのダイアログでは次の2つです。
-
-Copy files to destination → チェックする（実体をコピー）
-Add to targets: tabs → チェックする（バンドル同梱・最重要）
-取り込み後、ファイルを選んで File Inspector（⌘⌥1）の「Target Membership」にチェックが残っているか一度だけ見ておくと万全です。
-
-productsフォルダができてそっちに入っちゃった。Tabsフォルダに写した方がいい？
-
-22:26
-
-ファイル配置とターゲットメンバーシップの重要性を検討した。
-ファイル配置とターゲットメンバーシップの重要性を検討した。
-(英訳: "A 'Products' folder got created and the file went in there. Should I move it to the Tabs folder?")
-
-はい、tabs フォルダ（グループ）に移したほうがいいです。Products は移動先として正しくありません。
-
-理由を一言で言うと、**Products グループは Xcode が自動管理する「ビルド成果物（.app などの出力）専用の特別なグループ」**で、自分で作るリソースファイルを置く場所ではないからです（新しく作られたように見えても、Products は元々プロジェクトに必ず存在するグループです）。ここに置くと管理上まぎらわしく、Target Membership も正しく付かないことがあります。
-
-ただ、安心してほしいのは、**ビルドに同梱されるかどうかを最終的に決めるのは「どのグループにあるか」ではなく「Target Membership（アプリ本体ターゲットに紐づいているか）」**という点です。とはいえ Products に置いたままだと事故のもとなので、tabs グループへ移しましょう。
-
-移し方（おすすめ＝まずナビゲータ内でドラッグ）
-Project Navigator（左ペイン、⌘1）で、Products の中にある PrivacyInfo.xcprivacy を選ぶ。
-それを、SigmasApp.swift など Swift ファイルが並んでいる tabs グループの上へドラッグ＆ドロップ。これでグループ所属が tabs に変わります。
-移したファイルを選び、右ペインの File Inspector（⌘⌥1） を開く。
-一番下あたりの 「Target Membership」 で、tabs（アプリ本体ターゲット）にチェックが入っているか確認。入っていなければチェックを入れる。← ここが本当の決め手です。
-うまくドラッグできない／Target Membership が出ない場合（やり直しが確実）
-Products 配下だと挙動が変なことがあるので、その時は一度消して入れ直すのが確実です。
-
-Products の PrivacyInfo.xcprivacy を右クリック →「Delete」→ ダイアログで「Move to Trash」を選ぶ。
-これで消えるのは Xcode が Products 用にコピーした分だけです。あなたが最初にダウンロードした Downloads 内の元ファイルは消えませんので安心してください。
-Downloads にある PrivacyInfo.xcprivacy を、今度は tabs グループの上に直接ドロップして入れ直す。
-ダイアログで:
-Copy files to destination → チェック
-Add to targets: tabs → チェック（最重要）
-どちらの方法でも、最後に File Inspector の Target Membership で tabs にチェックが付いていれば成功です。移し終わったら、⌘B でビルドが通るか確認してみてください。
-
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Σigmas プライバシーポリシー</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            color: #333;
-            background: 
-#f5f5f7;
-        }
-        h1 { color: 
-#1d1d1f; font-size: 2em; }
-        h2 { color: 
-#1d1d1f; margin-top: 40px; }
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            margin: 20px 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        a { color: 
-#0071e3; }
-        footer {
-            text-align: center;
-            color: #888;
-            font-size: 0.85em;
-            margin-top: 60px;
-        }
-        /* ここから追加 */
-        .note {
-            background: 
-#fff8e1;
-            border-left: 4px solid 
-#f0a500;
-            padding: 10px 14px;
-            border-radius: 6px;
-            font-size: 0.9em;
-            color: 
-#5a4a00;
-            margin-top: 12px;
-        }
-        @media (prefers-color-scheme: dark) {
-            .note {
-                background: 
-#3a2e00;
-                border-left-color: 
-#f0c040;
-                color: 
-#f0d080;
-            }
-        }
-        /* ここまで追加 */
-    </style>
-</head>
-<body>
-    <div class="card">
-        <h2>免責事項</h2>
-        <p>本アプリの利用によって生じたデータの損失・破損について、開発者は一切の責任を負いません。大切なデータは定期的にバックアップ機能をご利用ください。</p>
-        <p>アプリの機能は予告なく変更・終了する場合があります。</p>
-    </div>
-    <div class="card">
-        <h2>データの保存について</h2>
-        <p>入力したデータはお使いのiPhone内に保存されます。iCloudバックアップが有効な場合、アプリのデータも自動的にiCloudバックアップに含まれます。</p>
-        <p>より確実なデータ保護のために、設定画面のJSONエクスポート機能で定期的にバックアップを作成することをお勧めします。</p>
-        <p class="note">⚠️ バックアップファイルは暗号化されていません。ファイルの保存・共有先（クラウドストレージ・メール等）にご注意ください。</p>
-    </div>
-    <div class="card">
-        <h1>プライバシーポリシー</h1>
-        <p>最終更新日：2026年3月15日</p>
-    </div>
-    <div class="card">
-        <h2>収集する情報について</h2>
-        <p>Σigmasは個人情報を一切収集しません。入力されたすべてのデータはお使いのデバイス内にのみ保存されます。外部サーバーへのデータ送信は行いません。</p>
-    </div>
-    <div class="card">
-        <h2>データの保存について</h2>
-        <p>アプリ内で入力したデータはすべてお使いのiPhone内に保存されます。アプリを削除するとデータも削除されます。定期的にバックアップ機能をご利用ください。</p>
-    </div>
-    <div class="card">
-        <h2>第三者への提供について</h2>
-        <p>ユーザーのデータを第三者に提供することは一切ありません。</p>
-    </div>
-    <div class="card">
-        <h2>広告について</h2>
-        <p>本アプリは広告を表示しません。</p>
-    </div>
-    <div class="card">
-        <h2>お問い合わせ</h2>
-        <p>プライバシーポリシーに関するご質問は以下までご連絡ください。</p>
-        <p><a href="mailto:sigmas.support@gmail.com">sigmas.support@gmail.com</a></p>
-    </div>
-    <div class="card">
-        <p><a href="index.html">サポートページに戻る</a></p>
-    </div>
-    <footer>
-        <p>© 2026 Σigmas</p>
-    </footer>
-</body>
-</html>アプリ名からして古いまま。できれば今の状況に合わせて作り直してほしい。あと、英語版はどうするんだっけ？ちなみにサポートの方も作り直してほしい。サポートようメールアドレスも変更したい。quicksigma.support@gmail.comって名前変更したので...そういえば、よくアプリのQ&Aあるよね？そういうのもどうしたらいんだろう？
-
-もっと表示
-22:36
-
-既存スタイル保持しつつ、ユーザー信頼構築に注力中。
-既存スタイル保持しつつ、ユーザー信頼構築に注力中。
-(英訳: "The app name is outdated [Σigmas]. Please rebuild the privacy policy to match the current state. Also, what were we doing about the English version? And please rebuild the support page too. I want to change the support email to quicksigma.support@gmail.com since I renamed it. Also, apps often have a Q&A/FAQ — how should I handle that?")
-
-エルシーです。まとめて作り直します。先に既存ページのスタイル基準を確認してから、内容を現状（Quick Sigma・新メール・課金あり）に合わせて再構築します。
-
-
-既存スタイル維持しつつ、プライバシーポリシー再構築を決定した。
-既存スタイル維持しつつ、プライバシーポリシー再構築を決定した。
-スタイルは新規に凝るより、既存のApple風カードデザインを踏襲します（プライバシー・サポートは「見慣れた安心感」が信頼につながるページなので、ここは奇をてらわないのが正解です）。内容を Quick Sigma の現状に合わせ、構造の不備も直します。
-
-まずプライバシーポリシー（日英1ページ）を作ります。
-
-
-サポートページのFAQ機能を二言語対応で構築検討。
-サポートページのFAQ機能を二言語対応で構築検討。
-次にサポートページ（FAQ 入り・日英1ページ）を作ります。FAQ は <details> で開閉できるアコーディオンにします（JS 不要・スマホで見やすい）。
-
-
-クロスリンク検証と構造チェック完了中。
-クロスリンク検証と構造チェック完了中。
-両ファイルを検証します（旧名称・旧メールの残存ゼロ、HTML 構造の健全性）。
-
-
-検証完了後、プライバシーポリシー・サポートページ・FAQ構築を企画した。
-検証完了後、プライバシーポリシー・サポートページ・FAQ構築を企画した。
-検証 OK です（タグバランス健全、旧名称「Σigmas」・旧メール残存ゼロ、相互リンク正常、日英切替アンカー機能）。2ファイルできました。
-
-何を直したか（プライバシーポリシー）
-元のページは内容自体はマニフェスト（収集なし）と矛盾しておらず良かったのですが、いくつか直しました。アプリ名を Σigmas → Quick Sigma、メールを quicksigma.support@gmail.com に更新。ついでに構造の不備も整えています。元ファイルは「免責事項」と「データの保存について」のカードが h1 タイトルより前に来ていて、しかも「データの保存について」が2枚重複していたので、タイトルを先頭に戻し、重複を1枚に統合しました。
-
-内容面で一つ正確性のための追記をしました。元の「外部サーバーへのデータ送信は行いません」は厳密には少し不正確で、アプリは課金確認のために Apple（StoreKit）とは通信します。そこで「入力データは外部送信しない／唯一の外部通信は Apple の課金確認のみで、そこに入力データは含まれない」と書き分け、「App 内課金について」セクションを新設して「支払い情報はアプリが受け取らない・保存しない、購入状態は端末に独自保存しない」ことを明記しました。これは制作思想の「外部接触は StoreKit の課金通信のみ」とも一致します。あわせて全体にダークモード対応も入れました（スマホで夜に開いても眩しくないように）。
-
-英語版はどうするか
-1ページに日本語＋英語を併記する形にしました（上部に「日本語｜English」の切替リンク、中間に区切り）。理由は、App Store Connect に登録するプライバシーポリシー URL は基本1つでよく、1ファイルなら URL も保守も1か所で済み、リンク切れの心配がないからです。日本語が先・英語が後（開発言語が日本語なので）にしています。
-
-もし「言語ごとにファイルを分けたい（privacy.html と privacy-en.html）」場合も対応できますが、個人開発で更新を1か所にまとめたいなら併記1ページのほうが楽です。今回はそちらにしました。サポートページ（index.html）も同じ併記方式です。
-
-サポートページと FAQ
-サポートページ（index.html）を作り直し、FAQ をその中に組み込みました。<details> タグのアコーディオン（タップで開閉、JS 不要・スマホで軽い）で、次の10問を日英で用意しています。
-
-データの保存場所／バックアップの取り方（JSON エクスポート）／機種変更時の引き継ぎ／無料でできる範囲（メイン枠＝タブ1・グループ5・アイテム5）／有料で増えること（枠開放・CSV・キー配列・桁数カスタム）／購入の復元／解約方法（iOS 設定アプリ）／解約・期限切れ後の挙動（閲覧は無制限・新規入力はメイン枠のみ）／外部送信の有無／対応言語・地域。
-
-文言は制作思想どおり、嫌味やパトロナイズを避け、前向き・中立にしています。価格は国や時期で変わるので、あえて具体額を書かず「アプリ内と App Store に表示」としました（保守不要・地域差の矛盾も防げます）。
-
-FAQ の置き場所の考え方（ご質問への回答）
-ヘルプの置き場所は2つあり、役割を分けるときれいです。
-
-アプリ内ヘルプ（既にお持ちの help_translations.json）→「使い方」（操作・機能）。オフラインでもその場で読める強み。
-Web の FAQ（今作った index.html）→「購入・解約・復元・データ・トラブル・プライバシー」。こちらはアプリを再申請しなくても、いつでも文章を直せる・増やせるのが最大の利点です。解約手順などは iOS の更新で変わることがあるので、Web 側に置くのが向いています。
-v1.0 のリリースには、今の Web FAQ で十分です。将来やるなら、アプリの設定画面に「よくある質問」リンクを置いてこの Web ページを Safari で開く、という形にすると、情報源が1か所に集約できて重複保守がなくなります（これはアプリ側の小さなコード追加なので、必要になったら別途）。
-
-メール変更の注意点（要確認）
-正直に1点お伝えします。Gmail は @ より前のアドレス部分（ローカル部）を後から変更できません。「名前変更した」というのが、
-
-新しく quicksigma.support@gmail.com というアカウントを作成した → 問題なし。そのまま使えます。
-旧アカウントの「表示名」だけ変えた（アドレスは今も sigmas.support@gmail.com）→ この場合、quicksigma.support@gmail.com 宛のメールは届きません。
-サンドボックステスターで使っている quicksigma.support+sandbox.jp@gmail.com のプラス記法も、本体の quicksigma.support@gmail.com が実在して初めて機能します。念のため、別のメールから quicksigma.support@gmail.com 宛に一通テスト送信して、受信できるか確認してください。受信できなければ、新規にそのアカウントを取得する必要があります。
-
-反映の手順（GitHub Pages）
-GitHub のリポジトリ（orucad4/sigmas-support）を開く。
-privacy.html と index.html を、今回の新ファイルで置き換えてコミット（Web 上で該当ファイルを開き Upload/Edit、または差し替えコミット）。
-GitHub Pages が自動で再ビルドします（1分ほど）。
-ブラウザで https://orucad4.github.io/sigmas-support/（サポート）と .../privacy.html（ポリシー）を開いて表示を確認。
-URL についての注意: 表示名は Quick Sigma に変えますが、リポジトリ／フォルダ名「sigmas-support」は変えないでください。これを変えると URL が変わり、App Store Connect に登録済みのサポート URL・プライバシーポリシー URL がリンク切れになります。表示名の変更と URL は無関係なので、URL は据え置きが正解です。
-
-App Store Connect 側で見直す箇所
-サポート URL（App 情報）→ https://orucad4.github.io/sigmas-support/ のまま据え置き。
-プライバシーポリシー URL → https://orucad4.github.io/sigmas-support/privacy.html のまま据え置き。
-App 審査情報の連絡先メールに旧アドレスが入っていれば、quicksigma.support@gmail.com に更新（受信確認後に）。
-Apple Developer アカウント自体の登録メールは別物なので触らなくて OK。
-下に2ファイルを置きます。メールの受信確認だけ先に済ませてから反映するのが安全です。確認が取れたら、残りの Phase 12（Privacy Manifest 同梱・App Privacy 設定）の仕上げに戻りましょう。
-
-
-Presented 2 files
-Presented 2 files
-privacy.html（プライバシーポリシー・日英）と index.html（サポート＋FAQ・日英）をお渡ししました。
-
-次の一手として、まず quicksigma.support@gmail.com の受信テスト（別アドレスから1通送って届くか）を済ませてください。ここが通れば、GitHub Pages への差し替え → App Store Connect の連絡先メール更新、と進められます。受信できなかった場合はアカウント新規作成が要るので、その時点で教えてください。
-
-
-Privacy
-コード · HTML 
-
-Index
-コード · HTML 
-
-Claude Fable 5 は現在ご利用いただけません。
-詳細を見る(opens in new tab)
-
-
-
-
-
-Claude は AI のため、誤りを含む可能性があります。回答内容は必ずご確認ください。
-
-
-Index · HTML
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -625,156 +71,155 @@ Index · HTML
 </head>
 <body>
     <div class="langnav"><a href="#ja">日本語</a>｜<a href="#en">English</a></div>
- 
+
     <!-- ===================== 日本語 ===================== -->
     <section id="ja">
         <div class="card">
             <h1>Quick Sigma サポート</h1>
             <p class="lead">電卓感覚でまとめて集計できるアプリ「Quick Sigma（かんたん集計）」のサポートページです。よくあるご質問をまとめました。</p>
         </div>
- 
+
         <div class="card">
             <h2>よくあるご質問</h2>
- 
+
             <details>
                 <summary>入力したデータはどこに保存されますか？</summary>
                 <p>すべてお使いの iPhone 内に保存されます。外部のサーバーへ送信されることはありません。詳しくは<a href="privacy.html">プライバシーポリシー</a>をご覧ください。</p>
             </details>
- 
+
             <details>
                 <summary>バックアップはどう取りますか？</summary>
                 <p>設定画面の「JSON エクスポート」からバックアップファイルを作成できます。作成したファイルは、なくさない場所に保管してください。大切なデータは定期的にバックアップすることをおすすめします。</p>
             </details>
- 
+
             <details>
                 <summary>機種変更のとき、データを移せますか？</summary>
                 <p>はい。旧端末で JSON エクスポートしてバックアップファイルを作り、新しい端末の Quick Sigma でそのファイルをインポートすると、データを引き継げます。</p>
             </details>
- 
+
             <details>
                 <summary>無料のまま、どこまで使えますか？</summary>
                 <p>基本の集計はずっと無料でお使いいただけます。無料プランでは、並び順の上位＝「メイン」のタブ 1 つ・各グループ 5 つ・各アイテム 5 つまで、新しく入力できます。</p>
             </details>
- 
+
             <details>
                 <summary>有料プランにすると何ができますか？</summary>
                 <p>メインの枠を超えて、タブ・グループ・アイテムを自由に増やせます。あわせて、CSV 出力・キー配列の変更・桁数のカスタム設定などもお使いいただけます。月額プランと年額プランがあり、価格はアプリ内および App Store に表示されます。</p>
             </details>
- 
+
             <details>
                 <summary>購入を復元するには？</summary>
                 <p>以前に購入された端末と同じ Apple アカウントでサインインした状態で、アプリ内の「購入を復元」をお試しください。アプリを再インストールした場合も、同じ Apple アカウントなら自動的に復元されます。</p>
             </details>
- 
+
             <details>
                 <summary>解約はどうすればよいですか？</summary>
                 <p>iPhone の「設定」を開き、いちばん上のご自身の名前（Apple アカウント）→「サブスクリプション」から手続きできます。サブスクリプションの解約は Apple の管理画面で行うしくみのため、アプリ内ではなく「設定」から操作してください。</p>
             </details>
- 
+
             <details>
                 <summary>解約・期限切れになると、これまでのデータは消えますか？</summary>
                 <p>消えません。これまでに入力したデータの閲覧とバックアップは、その後もずっと無制限にできます。新しい入力は、無料プランと同じ「メインの枠」の範囲で続けられます。</p>
             </details>
- 
+
             <details>
                 <summary>入力したデータが外部に送られることはありますか？</summary>
                 <p>ありません。集計データを外部に送信することはなく、広告や利用状況の解析（トラッキング）も行っていません。</p>
             </details>
- 
+
             <details>
                 <summary>対応している言語・地域は？</summary>
                 <p>日本語と英語に対応しています。日本および英語圏の一部の国・地域で配信しています。</p>
             </details>
         </div>
- 
+
         <div class="card">
             <h2>お問い合わせ</h2>
             <p>上記で解決しないご質問・不具合のご報告は、以下までご連絡ください。できるだけ早くご返信します。</p>
             <p><a href="mailto:quicksigma.support@gmail.com">quicksigma.support@gmail.com</a></p>
         </div>
- 
+
         <div class="card">
             <p><a href="privacy.html">プライバシーポリシー</a></p>
         </div>
     </section>
- 
+
     <div class="divider">— English below —</div>
- 
+
     <!-- ===================== English ===================== -->
     <section id="en" lang="en">
         <div class="card">
             <h1>Quick Sigma Support</h1>
             <p class="lead">Support page for Quick Sigma, an app that lets you total things up across multiple groups as easily as using a calculator. Below are answers to common questions.</p>
         </div>
- 
+
         <div class="card">
             <h2>Frequently Asked Questions</h2>
- 
+
             <details>
                 <summary>Where is the data I enter stored?</summary>
                 <p>It is stored only on your iPhone. It is never sent to any external server. See the <a href="privacy.html">Privacy Policy</a> for details.</p>
             </details>
- 
+
             <details>
                 <summary>How do I make a backup?</summary>
                 <p>You can create a backup file using "JSON Export" in Settings. Keep the file somewhere safe. We recommend backing up your important data regularly.</p>
             </details>
- 
+
             <details>
                 <summary>Can I move my data to a new device?</summary>
                 <p>Yes. Use JSON Export on your old device to create a backup file, then import that file in Quick Sigma on your new device to carry your data over.</p>
             </details>
- 
+
             <details>
                 <summary>How much can I do for free?</summary>
                 <p>You can use the core totaling features for free, forever. On the free plan, you can add new entries to your "Main" items — the top of each list by order: 1 tab, 5 groups per tab, and 5 items per group.</p>
             </details>
- 
+
             <details>
                 <summary>What do paid plans unlock?</summary>
                 <p>You can add tabs, groups, and items freely beyond the Main limits. You also get CSV export, custom key layouts, and custom digit settings. Monthly and yearly plans are available; prices are shown in the app and on the App Store.</p>
             </details>
- 
+
             <details>
                 <summary>How do I restore my purchase?</summary>
                 <p>Make sure you are signed in with the same Apple Account you used to purchase, then tap "Restore Purchases" in the app. If you reinstall the app, your purchase restores automatically as long as you use the same Apple Account.</p>
             </details>
- 
+
             <details>
                 <summary>How do I cancel my subscription?</summary>
                 <p>Open the Settings app, tap your name (Apple Account) at the top, then "Subscriptions." Subscriptions are managed by Apple, so cancellation is done in Settings rather than inside the app.</p>
             </details>
- 
+
             <details>
                 <summary>If I cancel or my subscription expires, do I lose my data?</summary>
                 <p>No. You can keep viewing and backing up all the data you've entered, with no limits. New entries continue within the same "Main" limits as the free plan.</p>
             </details>
- 
+
             <details>
                 <summary>Is any of my data sent externally?</summary>
                 <p>No. Your data is never sent externally, and the app uses no advertising or usage tracking.</p>
             </details>
- 
+
             <details>
                 <summary>Which languages and regions are supported?</summary>
                 <p>Japanese and English. The app is distributed in Japan and select English-speaking countries and regions.</p>
             </details>
         </div>
- 
+
         <div class="card">
             <h2>Contact</h2>
             <p>If your question isn't answered above, or to report a problem, please contact us. We'll reply as soon as we can.</p>
             <p><a href="mailto:quicksigma.support@gmail.com">quicksigma.support@gmail.com</a></p>
         </div>
- 
+
         <div class="card">
             <p><a href="privacy.html">Privacy Policy</a></p>
         </div>
     </section>
- 
+
     <footer>
         <p>© 2026 Quick Sigma</p>
     </footer>
 </body>
 </html>
- 
