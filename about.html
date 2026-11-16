@@ -351,8 +351,8 @@
                 <li><strong>Quick Sigma:</strong> It gives you totals and entry counts. For anything beyond that, export a CSV file and take it into a spreadsheet or another tool. (CSV export is part of the Full Plan.)</li>
             </ul>
             <p>In the exported CSV, each entry is one row. The file looks like this:</p>
-            <!-- 見本のデータ。★英語の見出しの語は、英語の端末で書き出した実物に合わせて直す（未確認） -->
-<pre class="csv">Tab,Date,Memo,Group,Item,Value
+            <!-- 見本のデータ。1 行目の列名は、英語の表示で書き出した実物と同じ（2026-11-15 に確認） -->
+<pre class="csv">Tab name,Date,Note,Group name,Item name,Value
 Household,2026-11-14,Saturday errands,Food,Vegetables,4.85
 Household,2026-11-14,Saturday errands,Food,Meat,12.49
 Household,2026-11-14,Saturday errands,Transit,Train,3.25
@@ -360,14 +360,14 @@ Household,2026-11-15,,Food,Vegetables,2.98</pre>
             <p>Open it in a spreadsheet app and it comes up as this table:</p>
             <div class="tablewrap">
                 <table class="sheet">
-                    <tr><th>Tab</th><th>Date</th><th>Memo</th><th>Group</th><th>Item</th><th>Value</th></tr>
+                    <tr><th>Tab name</th><th>Date</th><th>Note</th><th>Group name</th><th>Item name</th><th>Value</th></tr>
                     <tr><td>Household</td><td>2026-11-14</td><td>Saturday errands</td><td>Food</td><td>Vegetables</td><td class="num">4.85</td></tr>
                     <tr><td>Household</td><td>2026-11-14</td><td>Saturday errands</td><td>Food</td><td>Meat</td><td class="num">12.49</td></tr>
                     <tr><td>Household</td><td>2026-11-14</td><td>Saturday errands</td><td>Transit</td><td>Train</td><td class="num">3.25</td></tr>
                     <tr><td>Household</td><td>2026-11-15</td><td></td><td>Food</td><td>Vegetables</td><td class="num">2.98</td></tr>
                 </table>
             </div>
-            <p>Categories (the Group column) and items (the Item column) appear exactly as you named them, and values are plain numbers with no units or thousands separators, so the table is ready for formulas and charts.</p>
+            <p>Categories (the Group name column) and items (the Item name column) appear exactly as you named them, and values are plain numbers with no units or thousands separators, so the table is ready for formulas and charts.</p>
         </div>
 
         <!-- Compared by kind of app. No individual app names. -->
