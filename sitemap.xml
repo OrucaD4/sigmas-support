@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Quick Sigma サポートサイトのサイトマップ（検索エンジンに、どのページがあるかを伝えるファイル）。
+     ページを足したら <url> を 1 つ足す。中身を直したら、そのページの <lastmod> の日付を直す。 -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- サポート（index.html は、末尾が / の住所で表す） -->
+  <url><loc>https://orucad4.github.io/sigmas-support/</loc><lastmod>2026-11-16</lastmod></url>
+  <!-- 紹介ページ（日本語） -->
+  <url><loc>https://orucad4.github.io/sigmas-support/about.html</loc><lastmod>2026-11-16</lastmod></url>
+  <!-- 紹介ページ（英語） -->
+  <url><loc>https://orucad4.github.io/sigmas-support/about-en.html</loc><lastmod>2026-11-16</lastmod></url>
+  <!-- プライバシーポリシー -->
+  <url><loc>https://orucad4.github.io/sigmas-support/privacy.html</loc><lastmod>2026-11-16</lastmod></url>
+</urlset>
