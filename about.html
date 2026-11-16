@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <!--
-  about.html — Quick Sigma の概要ページ（日本語／英語）
+  about.html — Quick Sigma の紹介ページ（日本語）。英語は about-en.html
   置き場所: sigmas-support リポジトリの直下（index.html・privacy.html と同じ階層）
+  いっしょに置く画像: icon-192.png・badge-app-store-ja-black.svg
 
   このページの決まり:
-  ・主役は「電卓・表計算とくらべて」の節。ほかのページ（App Store・FAQ）に無い中身はここ
-  ・「速い」「間違いが少ない」と言い切らない（測った数字が無い）。理由を書いて、読む人に任せる
-  ・しくみ・無料と有料の言い方は App Store の説明文（v2.1）にそろえる
-  ・価格のように変わる数字は書かず、App Store に任せる
+  ・芯は「数字を簡単に入力して、分類ごとの合計をすぐに出せる集計アプリ」。
+    題名・冒頭・description・構造化データを、この言い方にそろえる
+  ・「早い」は、理由（操作が単純 → 簡単 → だから早い）と一緒に書く。測った数字が無いので言い切らない
+  ・「電卓・表計算とくらべて」は、その裏づけの節
+  ・価格のように変わる数字は書かず、App Store に任せる。OS の名前と版も書かない（Apple の手引き）
   ・アプリに無い機能を「ありません」と並べる節は作らない
+  ・App Store のバッジは 1 ページに 1 つ。絵は Apple が配っているものをそのまま使う
   ・アプリの版を出したら「最終更新日」「対象の版」と、下の JSON-LD の
-    softwareVersion / dateModified を直す（3 か所。「★版を出したら直す」で検索）
-  ・JavaScript・外部の画像・外部のフォントは使わない（読み込みが速く、通信もしない）
+    softwareVersion / dateModified を直す（「★版を出したら直す」で検索）。about-en.html も同じ
+  ・日付を変えたときの動き（同じ日付の記録とまとまらない）は、アプリを直したら書き直す
+    （「★アプリを直したら書き直す」で検索）
+  ・JavaScript・外部の画像・外部のフォントは使わない（読み込みが速く、よそへ通信もしない）
 -->
 <html lang="ja">
 <head>
@@ -19,11 +24,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- title と description は、検索結果に出る見出しと説明になる -->
-    <title>Quick Sigma（かんたん集計）とは / About Quick Sigma</title>
-    <meta name="description" content="Quick Sigma（かんたん集計）は、伝票やレシートの数字を電卓感覚で入力し、分類別・内訳別・日付別の合計を出す iPhone アプリです。Quick Sigma is a calculator-style iPhone app that totals numbers by category, by item, and by day.">
+    <title>Quick Sigma（かんたん集計）｜簡単に入力できる集計アプリ</title>
+    <meta name="description" content="Quick Sigma（かんたん集計）は、数字を簡単に入力して、分類ごとの合計をすぐに出せる iPhone の集計アプリです。伝票やレシートの数字を、電卓を打つ感覚で入力できます。">
 
     <!-- canonical: このページの正式な住所。写しが別の住所にできても、ここが本物だと伝える -->
     <link rel="canonical" href="https://orucad4.github.io/sigmas-support/about.html">
+    <!-- hreflang: 同じ中身の日本語のページと英語のページを、検索エンジンに対として伝える -->
+    <link rel="alternate" hreflang="ja" href="https://orucad4.github.io/sigmas-support/about.html">
+    <link rel="alternate" hreflang="en" href="https://orucad4.github.io/sigmas-support/about-en.html">
 
     <!--
       構造化データ（JSON-LD）: 検索エンジンなどの機械が、このページが
@@ -36,13 +44,13 @@
         "@type": "MobileApplication",
         "name": "Quick Sigma",
         "alternateName": "かんたん集計",
-        "description": "A calculator-style iPhone app that totals numbers by category, by item, and by day. All data stays on the device.",
-        "operatingSystem": "iOS 18.6 or later",
+        "description": "数字を簡単に入力して、分類ごとの合計をすぐに出せる iPhone の集計アプリ。データは端末の中だけに保存されます。",
+        "operatingSystem": "iOS",
         "softwareVersion": "2.1",
-        "dateModified": "2026-11-15",
-        "inLanguage": ["ja", "en"],
+        "dateModified": "2026-11-16",
+        "inLanguage": "ja",
         "url": "https://orucad4.github.io/sigmas-support/about.html",
-        "installUrl": "https://apps.apple.com/app/quick-sigma/id6763864059",
+        "installUrl": "https://apps.apple.com/jp/app/quick-sigma/id6763864059",
         "offers": {
             "@type": "Offer",
             "price": "0",
@@ -118,6 +126,22 @@
             padding: 10px 14px;
             margin: 12px 0;
         }
+        /* 紹介の冒頭: 一言の売り文句を大きめに出す */
+        .catch { font-size: 1.15em; font-weight: 600; color: #1d1d1f; margin: 4px 0 8px; }
+        /* 使い方の 3 ステップ: 番号つきの箇条書きを少し広めに */
+        ol.steps { padding-left: 1.4em; }
+        ol.steps li { margin: 12px 0; }
+        /* アプリのアイコン（冒頭）。96px で表示（画像は 2 倍の 192px） */
+        .appicon { width: 96px; height: 96px; display: block; margin: 0 0 12px; }
+        /*
+          App Store のバッジ。Apple の決まり: 高さ 40px 以上・まわりにバッジの高さの 1/4 以上の余白。
+          高さ 48px・余白 12px（= 48 ÷ 4）にしている。絵は Apple が配っているものをそのまま使う。
+        */
+        .badgelink { display: inline-block; margin: 12px; line-height: 0; }
+        .badge { height: 48px; width: auto; display: block; }
+        .credit { font-size: 0.8em; }
+        /* かっこの中を途中で改行させない（幅が足りなければ、かっこごと次の行へ） */
+        .nobr { display: inline-block; }
         footer {
             text-align: center;
             color: #888;
@@ -137,6 +161,7 @@
             .compare li.best { border-left-color: #4da3ff; background: #26262a; }
             .example { background: #26262a; }
             .tag { color: #4da3ff; border-color: #4da3ff; }
+            .catch { color: #f5f5f7; }
             pre.csv { background: #26262a; }
             table.sheet th, table.sheet td { border-color: #48484a; }
             table.sheet th { background: #26262a; }
@@ -144,19 +169,117 @@
     </style>
 </head>
 <body>
-    <div class="langnav"><a href="#ja">日本語</a>｜<a href="#en">English</a></div>
+    <div class="langnav">日本語｜<a href="about-en.html" lang="en" hreflang="en">English</a></div>
 
     <!-- ===================== 日本語 ===================== -->
     <section id="ja">
         <div class="card">
-            <h1>Quick Sigma（かんたん集計）とは</h1>
-            <p class="lead">伝票やレシートの数字を電卓を打つ感覚で入力し、分類ごと・内訳ごと・日付ごとの合計を出す iPhone アプリです。同じ紙を何度もめくり直さずに済むように作りました。</p>
+            <img class="appicon" src="icon-192.png" alt="Quick Sigma のアイコン" width="96" height="96">
+            <h1>Quick Sigma<span class="nobr">（かんたん集計）</span></h1>
+            <p class="catch">簡単に入力できて、すぐに集計できる。</p>
+            <p class="lead">Quick Sigma（かんたん集計）は、数字を簡単に入力して、分類ごとの合計をすぐに出せる iPhone の集計アプリです。伝票やレシートのような紙の数字を、電卓を打つ感覚で入力できます。同じ紙を何度もめくり直さずに済むように作りました。</p>
+            <p class="meta">このページは、Quick Sigma の開発者による公式の紹介ページです。</p>
             <!-- ★版を出したら直す: 最終更新日と対象の版（time の datetime も） -->
-            <p class="meta">最終更新日：<time datetime="2026-11-15">2026年11月15日</time>／対象のアプリの版：2.1</p>
-            <p><a href="https://apps.apple.com/jp/app/quick-sigma/id6763864059">App Store で見る</a></p>
+            <p class="meta">最終更新日：<time datetime="2026-11-16">2026年11月16日</time>／対象のアプリの版：2.1</p>
+            <a class="badgelink" href="https://apps.apple.com/jp/app/quick-sigma/id6763864059"><img class="badge" src="badge-app-store-ja-black.svg" alt="App Store からダウンロード" width="131" height="48"></a>
         </div>
 
-        <!-- ▼ このページの主役。ほかのページに無い中身 -->
+        <!-- ▼ 使い方（旧「しくみ」をここへ吸収した） -->
+        <div class="card">
+            <h2>使い方は 3 ステップ</h2>
+            <ol class="steps">
+                <li><strong>分類を登録する（最初に一度だけ）</strong><br>
+                    何を集計するかに合わせて、次の 3 階層を登録します。
+                    <p class="example">集計の種類（タブ）→ 分類（グループ）→ 内訳（アイテム）<br>例）家計 → 食費 → 野菜</p>
+                    <span class="meta">アプリの画面では、かっこの中の名前で呼びます。このページでも、ここから先はその名前を使います。アイテムは無くてもかまいません。</span></li>
+                <li><strong>キーを押して入力する</strong><br>
+                    登録したグループとアイテムは、そのまま電卓のキーになります。「グループ → アイテム → 数字」の順に押すだけです。</li>
+                <li><strong>∑（集計）キーで合計を見る</strong><br>
+                    小計と合計が出ます。グループ別・アイテム別・日付別に見方を切り替えられ、今週・今月・先月などの期間でもまとめられます。合計といっしょに、入力した件数も表示します。</li>
+            </ol>
+        </div>
+
+        <!-- ▼ このページの芯。「なぜ簡単か」を、準備・入力・集計の順に書く -->
+        <div class="card">
+            <h2>簡単に入力できる理由</h2>
+
+            <h3>準備が簡単</h3>
+            <ul>
+                <li><strong>入れてすぐ始められます。</strong>アカウントの登録は要りません。</li>
+                <li><strong>決めることを絞ってあります。</strong>単位ラベルや桁数といった数値の扱いは、タブ（集計の種類）ごとに決めます。最初は「単位ラベルなし・桁数は通常（8 桁・小数 2 桁）・日付は当日」になっているので、そのままでも使い始められます。自分の用途に合わせて、必要なところだけ変えてください。</li>
+                <li><strong>登録は、名前を打って改行するだけ。</strong>グループもアイテムも、名前を打って改行すれば、そのまま次の名前を続けて登録できます。</li>
+            </ul>
+
+            <h3>入力が簡単</h3>
+            <ul>
+                <li><strong>分類は、キーを押して選ぶだけ。</strong>名前を毎回打ち込まないので、同じ分類が「食費」「食料費」のように別々の名前になること（表記揺れ）がありません。</li>
+                <li><strong>数字は、電卓と同じ打ち方。</strong>見慣れた並びのキーなので、迷わずに打てます。</li>
+                <li><strong>日付は自動で入ります。</strong>タブを選ぶと、今日の日付が入ります。前日の分を翌朝に入力する、集計作業をしない曜日がある、といった使い方にも合わせられます（下の「日付のルール」で説明します）。</li>
+                <li><strong>続けて入力するときは、前の入力を引き継げます。</strong>新規入力のキーで、次をどこから入れるか（グループから・アイテムから・数値から）を選べます。同じ分類が続くなら、分類を選び直さずに次の数字を打てます。</li>
+                <li><strong>入力画面には、入力に要るものだけ。</strong>打つたびに数字が変わる集計結果などは出しません。目の前の数字に集中できます。</li>
+                <li><strong>キーは、いつも同じ場所に出ます。</strong>グループとアイテムのキーは数字キーと同じ場所に、毎回同じ並びで出ます。指も視線も大きく動かさずに済み、場所で覚えられます。</li>
+            </ul>
+
+            <h3>集計が簡単</h3>
+            <ul>
+                <li><strong>∑（集計）キーを押すだけ。</strong>式を作ったり、範囲を選んだりする必要はありません。入力した数字が、分類ごとにまとまって出ます。</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>簡単だから、早く入力できる</h2>
+            <p>押すのは「グループ → アイテム → 数字」だけ。名前は打たず、キーの場所も変わらず、日付も自動で入ります。ひとつひとつの手間を減らしてあるので、伝票の束のように件数が多いときでも、続けて手早く入力できます。</p>
+        </div>
+
+        <!-- ▼ 製品ページでは書ききれていない設定の話 -->
+        <div class="card">
+            <h2>自分の使い方に合わせられます</h2>
+            <ul>
+                <li><strong>単位ラベルと桁数：</strong>数字の前か後ろに付ける単位ラベル（¥、kg、箱など）は、タブごとに自由に決められます。単位ラベルは表示だけのもので、計算には影響しません。桁数は「通常」（8 桁・小数 2 桁）と「細かい数字」（4 桁・小数 6 桁）から選べます。</li>
+                <li><strong>キーの色：</strong>数字キーの色のテーマと、グループのキー・アイテムのキーの色を、それぞれ 5 種類から選べます（無料で選べます）。グループのキーとアイテムのキーには同じ色を選べないようにしてあるので、いま何を選んでいるのかが色でも分かります。</li>
+                <li><strong>キーレイアウト：</strong>標準の 3×4（ノーマル）のほかに、3×3（幅広）と 4×4（拡張）があります（3×3 と 4×4 はフルプランの機能です）。</li>
+            </ul>
+        </div>
+
+        <!-- ▼ 日付のルール。ヘルプより詳しく、例で説明する -->
+        <div class="card">
+            <h2>日付のルール（日付が自動で入るしくみ）</h2>
+            <p>入力を始めるとき、日付は Quick Sigma が入れます。何も決めなければ、今日の日付です。「いつ集計作業をするか」が決まっている場合は、タブごとにルールを決めておくと、その使い方に合った日付が入ります。</p>
+
+            <h3>決めるのは 2 つだけ</h3>
+            <ul>
+                <li><strong>集計する曜日：</strong>集計作業（数字の入力）をする曜日です。最初は全部の曜日がオンです。集計作業をしない曜日をオフにしておくと、次に作業をする日に、作業をしなかった日の分の日付も選べるようになります。</li>
+                <li><strong>前日日付を使う：</strong>オンにすると、日付が 1 日前になります。「昨日の分を、今朝入力する」使い方のためのスイッチです。最初はオフです。</li>
+            </ul>
+            <p class="meta">どちらも、タブ設定で決めます。</p>
+
+            <h3>日付の決まり方</h3>
+            <ul>
+                <li>候補になるのは、<strong>「前回の集計する曜日の次の日」から「今日」まで</strong>の日付です。前回の集計作業のあと、まだ入力していないはずの日が候補になる、という考え方です。</li>
+                <li>「前日日付を使う」がオンなら、その候補が全部 1 日ずつ前にずれます。</li>
+                <li>候補が 1 日だけなら、その日付が自動で入ります。2 日以上あるときは、日付を選ぶ画面が出ます。</li>
+            </ul>
+
+            <h3>例</h3>
+            <p class="example"><strong>毎日、その日のうちに入力する</strong><br>設定：全部の曜日がオン・前日日付はオフ（最初のまま）<br>→ いつ開いても、今日の日付が自動で入ります。</p>
+            <p class="example"><strong>毎朝、前の日の分を入力する（毎日作業する）</strong><br>設定：全部の曜日がオン・前日日付をオン<br>→ いつ開いても、昨日の日付が自動で入ります。</p>
+            <p class="example"><strong>毎朝、前の日の分を入力する。ただし月曜は集計作業をしない</strong><br>設定：月曜だけオフ・前日日付をオン<br>→ 水曜〜日曜の朝は、前の日の日付が自動で入ります。<br>→ 火曜の朝は、日曜と月曜から選ぶ画面が出ます。月曜に作業をしなかった日曜の分と、いつもどおりの月曜の分を、それぞれ日付を選んで入力できます。</p>
+            <p class="example"><strong>集計作業は週に一度、土曜だけ</strong><br>設定：土曜だけオン・前日日付はオフ<br>→ 土曜に開くと、日曜から土曜までの 7 日から選ぶ画面が出ます。</p>
+
+            <h3>入力は、タブごと・日付ごとにまとまります</h3>
+            <p>Quick Sigma では、タブごとの日付単位で入力していきます。ノートにたとえると、タブが 1 冊のノート、日付ごとに 1 ページ、入力した数字がそのページの 1 行です。アプリでは、この 1 ページを「記録」と呼びます。</p>
+            <ul>
+                <li><strong>日付は、ページ（記録）に付いています。</strong>数字 1 件ずつに付いているのではありません。</li>
+                <li><strong>入力画面の上の日付を押すと、日付を変えられます。</strong>このとき、その記録に入っている数字すべての日付が変わります。ページの上に書いた日付を書き直すのと同じです。</li>
+                <li><strong>1 件だけを別の日付にすることはできません。</strong>別の日付で入力したいときは、ホームの履歴からその日付の記録を選び、一覧から入力画面へ進んで、新規入力のキーで追加してください。</li>
+                <li><strong>入力を始めたときに、同じ日付の記録がすでにある場合：</strong>自動で入った日付に同じタブの記録があると、その記録に足すか、新しい記録を作るかを選ぶ画面が出ます。</li>
+                <!-- ★アプリを直したら書き直す: 日付を変えたときにも確認を出すようにしたら、この行 -->
+                <li><strong>入力の途中で日付を変えた場合：</strong>変えた先の日付に同じタブの記録があっても、一つにはまとまらず、新しい記録として残ります。合わせて集計したいときは、集計設定でタブを選び、その日付の記録を両方選べば、まとめて集計できます。</li>
+                <li>入力を始めるときに出る日付の候補は、曜日の設定から決まります。実際に入力したかどうかは見ていません。</li>
+            </ul>
+        </div>
+
+        <!-- ▼ 裏づけ。電卓・表計算との違い -->
         <div class="card">
             <h2>電卓・表計算とくらべて</h2>
             <p>伝票やレシートのように、紙に書かれた数字を手で打ち込んで、分類ごとに合計する。Quick Sigma は、この作業のために作ったアプリです。同じ作業を電卓や表計算ソフトでするときとの違いをまとめます。すでにパソコンなどで使えるデータになっている数字なら、表計算ソフトにまとめて貼り付けるほうが向いています。</p>
@@ -213,31 +336,17 @@
                     <tr><td>家計</td><td>2026-11-15</td><td></td><td>食費</td><td>野菜</td><td class="num">298</td></tr>
                 </table>
             </div>
-            <p>分類（グループ名）や内訳（アイテム名）は登録したとおりにそろって入り、数値は単位や桁区切りの付かない数字で入ります。式やグラフの元データとして、そのまま使えます。</p>
+            <p>分類（グループ名）や内訳（アイテム名）は登録したとおりにそろって入り、数値は単位ラベルや桁区切りの付かない数字で入ります。式やグラフの元データとして、そのまま使えます。</p>
         </div>
 
         <!-- 相手は「アプリの種類」。個別のアプリ名は書かない（相手が更新されると、こちらの記述が誤りになるため） -->
         <div class="card">
             <h2>ほかの種類のアプリとくらべて</h2>
-            <p>Quick Sigma は、何を集計するかを決めていないアプリです。分類も単位も、使う人が決めます。用途がはっきり決まっているなら、その用途の専用アプリのほうが向いていることもあります。</p>
+            <p>Quick Sigma は、何を集計するかを決めていないアプリです。分類も単位ラベルも、使う人が決めます。用途がはっきり決まっているなら、その用途の専用アプリのほうが向いていることもあります。</p>
             <ul>
                 <li><strong>カウンター（数取り）アプリ：</strong>ボタンを押して 1 ずつ数えるのが中心です。Quick Sigma は金額や重さなどの数値を打ち込み、分類・内訳・日付の 3 つの切り口で合計します。</li>
                 <li><strong>家計簿アプリ：</strong>家計のための項目や機能が、最初から用意されています。家計の管理そのものが目的なら、家計簿アプリのほうが向いています。Quick Sigma は分類を自分で決めるので、売上・在庫・距離など、家計以外の数字にも同じように使えます。</li>
                 <li><strong>割り勘アプリ：</strong>合計を人数で割る計算が中心のものが多くあります。Quick Sigma は、レシートの品目をひとりずつに振り分けて入力し、それぞれの合計を出します。</li>
-            </ul>
-        </div>
-
-        <div class="card">
-            <h2>しくみ</h2>
-            <p>最初に一度、次の 3 階層を登録します。</p>
-            <p class="example">集計の種類（タブ）→ 分類（グループ）→ 内訳（アイテム）<br>例）家計 → 食費 → 野菜</p>
-            <p class="meta">アプリの画面では、かっこの中の名前で呼びます。このページでも、ここから先はその名前を使います。</p>
-            <ul>
-                <li>登録したグループとアイテムは、そのまま電卓のキーになります。あとは「グループ → アイテム → 数字」の順にキーを押すだけです。</li>
-                <li>アイテムは無くてもかまいません。アイテムを登録しないグループは、グループを選んですぐ数字を打てます。</li>
-                <li>入力はタブの中で日付ごとに記録されます。同じキーで、毎日の入力を続けられます。</li>
-                <li>続けて入力するときは、新規入力のキーで、次をどこから入れるか（グループから・アイテムから・数値から）を選べます。同じ分類が続くなら、分類を選び直さずに次の数字を打てます。</li>
-                <li>∑（集計）キーを押すと、小計と合計が出ます。グループ別・アイテム別・日付別に見方を切り替えられ、今週・今月・先月などの期間でもまとめられます。合計といっしょに、入力した件数も表示します。</li>
             </ul>
         </div>
 
@@ -247,22 +356,24 @@
                 <li><strong>部門別の売上：</strong>毎日の売上を、部門ごとに電卓で計算しているお店。部門ごとに入力した売上を、商品ごとに並べ直して確認することもできます。</li>
                 <li><strong>家計：</strong>費目ごとに支出を記録して、月ごとに合計を見る。</li>
                 <li><strong>割り勘：</strong>まとめて払った食事代のレシートを、上から 1 回だけ入力します。∑（集計）キーを押せば、ひとりずつの合計がそろって出ます。人数分めくり直す必要はありません。</li>
-                <li><strong>お金以外：</strong>在庫の個数、走った距離など。単位はタブごとに自由に決められます。</li>
+                <li><strong>お金以外：</strong>在庫の個数、走った距離など。単位ラベルはタブごとに自由に決められます。</li>
             </ul>
         </div>
 
         <div class="card">
             <h2>無料でできること</h2>
             <ul>
-                <li>タブ 1 個、グループ 5 個、各グループにアイテム 5 個まで登録して入力できます。</li>
+                <li>タブ 1 個、グループ 5 個、各グループにアイテム 5 個まで登録して入力できます。この無料で使える枠を「メイン」と呼びます。</li>
                 <li>入力の件数や日数に上限はありません。</li>
+                <li>メインの中での並べ替えもできます。</li>
                 <li>過去データの閲覧・集計・バックアップは、すべて無料・無制限です。</li>
             </ul>
             <h2>サブスクリプション（フルプラン）でできること</h2>
             <ul>
                 <li>タブ・グループ・アイテムの追加が無制限</li>
-                <li>並び替え（メインの入れ替え）</li>
+                <li>メインの変更（どのタブ・グループ・アイテムをメインにするかの入れ替え）</li>
                 <li>桁数のカスタム設定、0 だけの入力</li>
+                <li>キーレイアウトの変更（3×3・4×4）</li>
                 <li>CSV エクスポート（表計算ソフトなどで使える書式）</li>
             </ul>
             <p>月額プランと年額プランがあります。価格は App Store とアプリ内の購入画面に表示されます。解約してもデータは消えません。閲覧・集計・バックアップは引き続き使え、メインの印が付いたタブ・グループ・アイテムには入力も続けられます。</p>
@@ -281,7 +392,7 @@
         <div class="card">
             <h2>対応している環境</h2>
             <ul>
-                <li>端末：iPhone（iOS 18.6 以降）</li>
+                <li>端末：iPhone（対応する OS の版は、App Store のページでご確認ください）</li>
                 <li>言語：日本語・英語</li>
                 <li>配信：日本および英語圏の一部の国・地域</li>
             </ul>
@@ -297,163 +408,9 @@
         </div>
     </section>
 
-    <div class="divider">— English below —</div>
-
-    <!-- ===================== English ===================== -->
-    <!-- lang="en" を付けると、読み上げや翻訳がこの部分を英語として扱う -->
-    <section id="en" lang="en">
-        <div class="card">
-            <h1>About Quick Sigma</h1>
-            <p class="lead">Quick Sigma is an iPhone app for adding up numbers from receipts, sales slips, and other paperwork. You key them in the way you would on a calculator and get totals by category, by item, and by day. It was built so you never have to go through the same stack of paper twice.</p>
-            <!-- ★版を出したら直す: Last updated と App version（time の datetime も） -->
-            <p class="meta">Last updated: <time datetime="2026-11-15">November 15, 2026</time> / App version: 2.1</p>
-            <p><a href="https://apps.apple.com/app/quick-sigma/id6763864059">View on the App Store</a></p>
-        </div>
-
-        <!-- ▼ The main section of this page -->
-        <div class="card">
-            <h2>How it compares with a calculator or a spreadsheet</h2>
-            <p>Quick Sigma is built for one job: taking numbers off paper, like a pile of receipts or sales slips, and totaling them by category. Here's how that job goes with a calculator, with a spreadsheet, and with Quick Sigma. If your numbers already exist as digital data, you're better off pasting them straight into a spreadsheet.</p>
-            <p class="meta">"Best fit" marks the tool, or tools, best suited to each task.</p>
-
-            <h3>Getting totals by category</h3>
-            <ul class="compare">
-                <li><strong>Calculator:</strong> You go back through the same paperwork once for every category.</li>
-                <li><strong>Spreadsheet:</strong> You have to build the formulas or a summary table yourself.</li>
-                <li class="best"><strong>Quick Sigma:</strong><span class="tag">Best fit</span> You set up your categories and items once, up front. After that, you go through the paperwork a single time, top to bottom, and tap the ∑ (Totals) key to see a subtotal for each category and the grand total.</li>
-            </ul>
-
-            <h3>Labeling each number</h3>
-            <ul class="compare">
-                <li><strong>Calculator:</strong> There's nowhere to put a label. You keep track of which number belongs to which category in your head or on paper.</li>
-                <li><strong>Spreadsheet:</strong> You type the category and item next to every number. Typing them over and over, it's easy to end up with the same item spelled several different ways. A drop-down list fixes that, but setting one up takes some know-how and prep work.</li>
-                <li class="best"><strong>Quick Sigma:</strong><span class="tag">Best fit</span> The categories and items you set up become keys on the calculator. You just tap them, so there's nothing to retype and the names always match.</li>
-            </ul>
-
-            <h3>Working from paper</h3>
-            <ul class="compare">
-                <li class="best"><strong>Calculator:</strong><span class="tag">Best fit</span> It sits right beside your paperwork.</li>
-                <li><strong>Spreadsheet:</strong> On a phone, the cells are small and fiddly. On a computer, your eyes keep jumping between the paper and the screen.</li>
-                <li class="best"><strong>Quick Sigma:</strong><span class="tag">Best fit</span> Your iPhone sits right beside your paperwork, and you tap keys just as you would on a calculator. Category and item keys show up in the same spot as the number keys, so your fingers and your eyes stay put.</li>
-            </ul>
-
-            <h3>Fixing a mistake</h3>
-            <ul class="compare">
-                <li><strong>Calculator:</strong> Unless your calculator keeps a record of what you entered, you start over.</li>
-                <li class="best"><strong>Spreadsheet:</strong><span class="tag">Best fit</span> You find the row and fix it.</li>
-                <li class="best"><strong>Quick Sigma:</strong><span class="tag">Best fit</span> Every entry is saved individually. Just like in a spreadsheet, you find the one that's wrong and fix it.</li>
-            </ul>
-
-            <h3>Going further: formulas, charts, and analysis</h3>
-            <ul class="compare">
-                <li><strong>Calculator:</strong> You retype your results into a spreadsheet or some other tool.</li>
-                <li class="best"><strong>Spreadsheet:</strong><span class="tag">Best fit</span> This is what spreadsheets do best.</li>
-                <li><strong>Quick Sigma:</strong> It gives you totals and entry counts. For anything beyond that, export a CSV file and take it into a spreadsheet or another tool. (CSV export is part of the Full Plan.)</li>
-            </ul>
-            <p>In the exported CSV, each entry is one row. The file looks like this:</p>
-            <!-- 見本のデータ。1 行目の列名は、英語の表示で書き出した実物と同じ（2026-11-15 に確認） -->
-<pre class="csv">Tab name,Date,Note,Group name,Item name,Value
-Household,2026-11-14,Saturday errands,Food,Vegetables,4.85
-Household,2026-11-14,Saturday errands,Food,Meat,12.49
-Household,2026-11-14,Saturday errands,Transit,Train,3.25
-Household,2026-11-15,,Food,Vegetables,2.98</pre>
-            <p>Open it in a spreadsheet app and it comes up as this table:</p>
-            <div class="tablewrap">
-                <table class="sheet">
-                    <tr><th>Tab name</th><th>Date</th><th>Note</th><th>Group name</th><th>Item name</th><th>Value</th></tr>
-                    <tr><td>Household</td><td>2026-11-14</td><td>Saturday errands</td><td>Food</td><td>Vegetables</td><td class="num">4.85</td></tr>
-                    <tr><td>Household</td><td>2026-11-14</td><td>Saturday errands</td><td>Food</td><td>Meat</td><td class="num">12.49</td></tr>
-                    <tr><td>Household</td><td>2026-11-14</td><td>Saturday errands</td><td>Transit</td><td>Train</td><td class="num">3.25</td></tr>
-                    <tr><td>Household</td><td>2026-11-15</td><td></td><td>Food</td><td>Vegetables</td><td class="num">2.98</td></tr>
-                </table>
-            </div>
-            <p>Categories (the Group name column) and items (the Item name column) appear exactly as you named them, and values are plain numbers with no units or thousands separators, so the table is ready for formulas and charts.</p>
-        </div>
-
-        <!-- Compared by kind of app. No individual app names. -->
-        <div class="card">
-            <h2>How it compares with other kinds of apps</h2>
-            <p>Quick Sigma doesn't assume what you're adding up. You pick the categories and the unit. If you have one specific purpose in mind, an app built for that purpose may serve you better.</p>
-            <ul>
-                <li><strong>Tally counter apps:</strong> These are mostly for counting things one tap at a time. Quick Sigma is for keying in amounts, weights, and other values, and totaling them three ways: by category, by item, and by date.</li>
-                <li><strong>Budgeting apps:</strong> These come with categories and features designed for personal finances. If managing a household budget is your goal, a budgeting app is the better choice. In Quick Sigma you define the categories yourself, so it works just as well for sales, inventory, mileage, or anything else you add up.</li>
-                <li><strong>Bill-splitting apps:</strong> Many of these divide the total evenly among everyone. With Quick Sigma, you assign each line on the receipt to a person as you enter it, so each person gets a total for what they actually had.</li>
-            </ul>
-        </div>
-
-        <div class="card">
-            <h2>How it works</h2>
-            <p>You set up three levels once, up front.</p>
-            <p class="example">What you're totaling (Tab) → Category (Group) → Breakdown (Item)<br>Example: Household → Food → Vegetables</p>
-            <p class="meta">The app calls these by the names in parentheses, and so does the rest of this page.</p>
-            <ul>
-                <li>The groups and items you set up become keys on your calculator. From then on, just tap Group → Item → number.</li>
-                <li>Items are optional. For a group without items, you type the number right after choosing the group.</li>
-                <li>Within each tab, entries are recorded by date, so you can keep using the same keys day after day.</li>
-                <li>When you're entering one number after another, the New Entry keys let you pick where the next one starts: at the group, at the item, or straight at the number. If the category hasn't changed, you just type the next number.</li>
-                <li>Tap the ∑ (Totals) key to see subtotals and the grand total. Switch between views (by group, by item, or by date), or total a period such as this week, this month, or last month. Each total also shows how many entries went into it.</li>
-            </ul>
-        </div>
-
-        <div class="card">
-            <h2>Ways to use it</h2>
-            <ul>
-                <li><strong>Sales by department:</strong> For shops that add up each day's sales by department on a calculator. You can also regroup the same sales by product.</li>
-                <li><strong>Household spending:</strong> Record what you spend by category and see each month's totals.</li>
-                <li><strong>Splitting the bill:</strong> You paid for dinner with friends. Enter the receipt just once, top to bottom, then tap ∑. Each person's total is ready, with no going back down the receipt for each person.</li>
-                <li><strong>More than money:</strong> Inventory counts, mileage, and so on. Each tab can have its own unit.</li>
-            </ul>
-        </div>
-
-        <div class="card">
-            <h2>Free</h2>
-            <ul>
-                <li>1 tab with up to 5 groups, and up to 5 items in each group.</li>
-                <li>No limit on how many entries or days you record.</li>
-                <li>Viewing past data, totals, and backup are always free and unlimited.</li>
-            </ul>
-            <h2>Full Plan (subscription)</h2>
-            <ul>
-                <li>Unlimited tabs, groups, and items</li>
-                <li>Reorder tabs, groups, and items freely</li>
-                <li>Custom digit limits (how many integer and decimal places an entry can have)</li>
-                <li>Saving 0 as an entry</li>
-                <li>CSV export (opens in spreadsheet apps)</li>
-            </ul>
-            <p>Monthly and yearly plans are available. Prices are shown on the App Store and on the in-app purchase screen. Canceling never deletes your data. Viewing, totals, and backup remain available, and you can keep adding entries to the tab, groups, and items marked Main.</p>
-        </div>
-
-        <div class="card">
-            <h2>Your data stays on your device</h2>
-            <ul>
-                <li>Everything you enter is stored only on your iPhone. Nothing is ever sent anywhere.</li>
-                <li>No account needed. No ads, no tracking.</li>
-                <li>To move your data to another device, create a backup file and restore it there.</li>
-            </ul>
-            <p>See the <a href="privacy.html#en">Privacy Policy</a> for details.</p>
-        </div>
-
-        <div class="card">
-            <h2>Requirements and availability</h2>
-            <ul>
-                <li>Device: iPhone (iOS 18.6 or later)</li>
-                <li>Languages: Japanese and English</li>
-                <li>Availability: Japan and select English-speaking countries and regions</li>
-            </ul>
-        </div>
-
-        <div class="card">
-            <h2>Related pages</h2>
-            <ul>
-                <li><a href="index.html#en">Support (FAQ)</a></li>
-                <li><a href="privacy.html#en">Privacy Policy</a></li>
-                <li>Contact: <a href="mailto:quicksigma.support@gmail.com">quicksigma.support@gmail.com</a></li>
-            </ul>
-        </div>
-    </section>
-
     <footer>
         <p>© 2026 Quick Sigma</p>
+        <p class="credit">Apple、Apple のロゴ、iPhone は、米国およびその他の国で登録された Apple Inc. の商標です。App Store は、Apple Inc. のサービスマークです。</p>
     </footer>
 </body>
 </html>
