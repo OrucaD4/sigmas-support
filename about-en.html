@@ -127,6 +127,8 @@
         .badgelink { display: inline-block; margin: 12px; line-height: 0; }
         .badge { height: 48px; width: auto; display: block; }
         .credit { font-size: 0.8em; }
+        /* 帰属表示は文ごとにひとまとまりにする（1 行に入らないときは、文の切れ目で改行する） */
+        .credit span { display: inline-block; }
         /* かっこの中を途中で改行させない（幅が足りなければ、かっこごと次の行へ） */
         .nobr { display: inline-block; }
         footer {
@@ -394,7 +396,7 @@ Household,2026-11-15,,Food,Vegetables,2.98</pre>
 
     <footer>
         <p>© 2026 Quick Sigma</p>
-        <p class="credit">Apple, the Apple logo, and iPhone are trademarks of Apple Inc., registered in the U.S. and other countries and regions. App Store is a service mark of Apple Inc.</p>
+        <p class="credit"><span>Apple, the Apple logo, and iPhone are trademarks of Apple&nbsp;Inc., registered in the U.S. and other countries and regions.</span> <span>App&nbsp;Store is a service mark of Apple&nbsp;Inc.</span></p>
     </footer>
 </body>
 </html>

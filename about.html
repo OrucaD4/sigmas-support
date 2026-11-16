@@ -140,6 +140,8 @@
         .badgelink { display: inline-block; margin: 12px; line-height: 0; }
         .badge { height: 48px; width: auto; display: block; }
         .credit { font-size: 0.8em; }
+        /* 帰属表示は文ごとにひとまとまりにする（1 行に入らないときは、文の切れ目で改行する） */
+        .credit span { display: inline-block; }
         /* かっこの中を途中で改行させない（幅が足りなければ、かっこごと次の行へ） */
         .nobr { display: inline-block; }
         footer {
@@ -410,7 +412,7 @@
 
     <footer>
         <p>© 2026 Quick Sigma</p>
-        <p class="credit">Apple、Apple のロゴ、iPhone は、米国およびその他の国で登録された Apple Inc. の商標です。App Store は、Apple Inc. のサービスマークです。</p>
+        <p class="credit"><span>Apple、Apple のロゴ、iPhone は、米国およびその他の国で登録された Apple&nbsp;Inc. の商標です。</span><span>App&nbsp;Store は、Apple&nbsp;Inc. のサービスマークです。</span></p>
     </footer>
 </body>
 </html>
